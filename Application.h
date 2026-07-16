@@ -27,6 +27,7 @@ private:
   float fpsAccumulator;
   bool isLeftdown;
   bool isRigthdown;
+  bool isCtrlDown;
 
   void HandleEvents();
   void UpdateTiming();

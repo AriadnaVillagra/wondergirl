@@ -56,20 +56,33 @@ void Application::HandleEvents() {
     switch (event.type) {
     case SDL_EVENT_QUIT:
       running = false;
+      
       break;
     case SDL_EVENT_KEY_DOWN:
+      if (event.key.key == SDLK_LCTRL) {
+        isCtrlDown = true;
+      }
       if (event.key.key == SDLK_ESCAPE) {
         running = false;
-      } else if (event.key.key == SDLK_LEFT) {
+      }
+      if (event.key.key == SDLK_LEFT) {
         isLeftdown = true;
-      } else if (event.key.key == SDLK_RIGHT) {
+      }
+      if (event.key.key == SDLK_RIGHT) {
         isRigthdown = true;
+      }
+      if (event.key.key == SDLK_UP) {
+        tomTom.Jump();
       }
       break;
     case SDL_EVENT_KEY_UP:
+      if (event.key.key == SDLK_LCTRL) {
+        isCtrlDown = false;
+      }
       if (event.key.key == SDLK_LEFT) {
         isLeftdown = false;
-      } else if (event.key.key == SDLK_RIGHT) {
+      }
+      if (event.key.key == SDLK_RIGHT) {
         isRigthdown = false;
       }
       break;
@@ -117,6 +130,9 @@ void Application::Run() {
   while (running) {
     UpdateTiming();
     HandleEvents();
+    if (isCtrlDown) {
+      tomTom.Run();
+    }
     if (isLeftdown) {
       tomTom.MoveLeft();
     }
