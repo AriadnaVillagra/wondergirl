@@ -3,7 +3,7 @@ void Sprite::Render(SDL_Renderer *renderer) {
   target.h = 100;
   target.w = 100;
   //target.x = 500 - target.w / 2;
-  target.y = 800 - target.h;
+  //target.y = 800 - target.h;
   SDL_RenderTexture(renderer, texture, &source[currentFrame], &target);
 }
 constexpr int height = 33;
