@@ -51,6 +51,7 @@ bool Application::Init() {
 }
 
 void Application::HandleEvents() {
+  lastFrameShiftDown = isShiftDown;
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
@@ -59,8 +60,8 @@ void Application::HandleEvents() {
       
       break;
     case SDL_EVENT_KEY_DOWN:
-      if (event.key.key == SDLK_LCTRL) {
-        isCtrlDown = true;
+      if (event.key.key == SDLK_LSHIFT) {
+        isShiftDown = true;
       }
       if (event.key.key == SDLK_ESCAPE) {
         running = false;
@@ -76,8 +77,8 @@ void Application::HandleEvents() {
       }
       break;
     case SDL_EVENT_KEY_UP:
-      if (event.key.key == SDLK_LCTRL) {
-        isCtrlDown = false;
+      if (event.key.key == SDLK_LSHIFT) {
+        isShiftDown = false;
       }
       if (event.key.key == SDLK_LEFT) {
         isLeftdown = false;
@@ -130,8 +131,8 @@ void Application::Run() {
   while (running) {
     UpdateTiming();
     HandleEvents();
-    if (isCtrlDown) {
-      tomTom.Run();
+    if (lastFrameShiftDown != isShiftDown) {
+      tomTom.Run(isShiftDown);
     }
     if (isLeftdown) {
       tomTom.MoveLeft();

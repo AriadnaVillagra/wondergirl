@@ -25,9 +25,10 @@ private:
   int fpsSampleIndex;
   int fpsSampleCount;
   float fpsAccumulator;
-  bool isLeftdown;
-  bool isRigthdown;
-  bool isCtrlDown;
+  bool isLeftdown = false;
+  bool isRigthdown = false;
+  bool isShiftDown = false;
+  bool lastFrameShiftDown = false;
 
   void HandleEvents();
   void UpdateTiming();

@@ -21,5 +21,5 @@ public:
   void Jump();
   bool InAir();
   void ClampSpeed();
-  void Run();
+  void Run(bool running);
 };

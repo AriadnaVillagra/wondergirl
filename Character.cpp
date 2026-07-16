@@ -16,7 +16,12 @@ void Character::Init(SDL_Texture *SdlTexture) {
   sprite.target.y = y;
 
   sprite.Init(SdlTexture);
+  sprite.SetAnimation({0, 1}, 0.3f, true);  
+  sprite.SetAnimation({2, 3, 4, 5}, 0.3f, true);
+  sprite.SetCurrentAnimation(0);
 }
+
+
 void Character::Render(SDL_Renderer *Renderer) { sprite.Render(Renderer); }
 void Character::UpdateSpeed(float DeltaTime) {
   if (direction != 0) {
@@ -59,7 +64,6 @@ void Character::Update(float DeltaTime) {
   UpdateSpeed(DeltaTime);
   UpdatePosition(DeltaTime);
   UpdateSprite(DeltaTime);
-  isRunning = false;
 }
 void Character::MoveLeft() {
   if (!InAir()) {
@@ -81,12 +85,8 @@ void Character::ClampSpeed() {
   float topSpeed;
   if (isRunning) {
     topSpeed = maxRunSpeed;
-    
-    std::cout << "run forest!" << std::endl;
   } else {
     topSpeed = maxWalkSpeed;
-    
-    std::cout << "walk forest!" << std::endl;
   }
 
   if (horizontalSpeed > topSpeed) {
@@ -95,7 +95,7 @@ void Character::ClampSpeed() {
     horizontalSpeed = -topSpeed;
   }
 }
-void Character::Run() {
-  isRunning = true;
-    std::cout << "run forest!" << std::endl;
+void Character::Run(bool running) {
+  isRunning = running;
+  sprite.SetCurrentAnimation(running ? 1 : 0);
 }

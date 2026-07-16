@@ -16,11 +16,11 @@ find_package(SDL3 REQUIRED CONFIG)
 find_package(SDL3_image REQUIRED CONFIG)
 find_package(SDL3_ttf REQUIRED CONFIG)
 
-add_executable(WonderGirl
-  WonderGirl.cpp
-  Application.cpp
-  Character.cpp
-  Sprite.cpp
+file(GLOB WONDERGIRL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/*.cpp")
+
+add_executable(
+  WonderGirl
+  ${WONDERGIRL_SOURCES}
 )
 
 target_link_libraries(WonderGirl PRIVATE
