@@ -10,7 +10,7 @@ public:
   float jump;
   float horizontalSpeed;
   bool isRunning;
-  void Init(SDL_Texture *SdlTexture);
+  void Init(SpriteData &spriteData);
   void Render(SDL_Renderer *Renderer);
   void UpdateSpeed(float DeltaTime);
   void UpdatePosition(float DeltaTime);

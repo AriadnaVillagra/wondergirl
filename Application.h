@@ -3,6 +3,8 @@
 #include "Character.h"
 
 #include <cstdint>
+#include <vector>
+#include "Wall.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -15,7 +17,9 @@ private:
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Texture *tomTomTexture;
+  SDL_Texture *wallTexture;
   Character tomTom;
+  std::vector<Wall> walls;
   bool running;
 
   uint64_t lastFrameTicks;
@@ -33,6 +37,8 @@ private:
   void HandleEvents();
   void UpdateTiming();
   void Render();
+  void DrawWalls();
+  void UpdateEntities();
 
 public:
   Application();

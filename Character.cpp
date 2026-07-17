@@ -9,13 +9,13 @@ constexpr float gravity = 500;
 constexpr float acceleration = 500;
 constexpr float maxWalkSpeed = 100;
 
-void Character::Init(SDL_Texture *SdlTexture) {
+void Character::Init(SpriteData &spriteData) {
   x = 500 - 100 / 2;
   y = 800 - 100;
   sprite.target.x = x;
   sprite.target.y = y;
 
-  sprite.Init(SdlTexture);
+  sprite.Init(spriteData);
   sprite.SetAnimation({0, 1}, 0.3f, true);  
   sprite.SetAnimation({2, 3, 4, 5}, 0.3f, true);
   sprite.SetCurrentAnimation(0);

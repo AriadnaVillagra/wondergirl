@@ -6,6 +6,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <iostream>
 #include <string>
+#include "SpriteData.h"
 
 Application::Application()
     : window(nullptr), renderer(nullptr), tomTomTexture(nullptr), tomTom(),
@@ -38,7 +39,12 @@ bool Application::Init() {
     return false;
   }
 
-  tomTom.Init(tomTomTexture);
+  SpriteData tomTomSpriteData;
+  tomTomSpriteData.texture = tomTomTexture;
+  tomTomSpriteData.framesPerRow = 6;
+  tomTomSpriteData.rowCount = 4;
+
+  tomTom.Init(tomTomSpriteData);
 
   if (!TTF_Init()) {
     std::cout << "TTF_Init failed: " << SDL_GetError() << std::endl;
@@ -47,7 +53,29 @@ bool Application::Init() {
 
   running = true;
   lastFrameTicks = SDL_GetTicksNS();
+  
+    wallTexture = IMG_LoadTexture(renderer, "assets/objects.png");
+  if (!wallTexture) {
+    std::cout << "IMG_LoadTexture failed: " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  SpriteData wallSpriteData;
+  wallSpriteData.texture = wallTexture;
+  wallSpriteData.framesPerRow = 9;
+  wallSpriteData.rowCount = 11;
+
+for (int i = 0; i < 5; ++i) {
+    Wall wall;
+    wall.Init(wallSpriteData, 100.0f * i, 400.0f);
+    walls.push_back(wall);
+  }
+
+
+  
   return true;
+
+
 }
 
 void Application::HandleEvents() {
@@ -123,7 +151,7 @@ void Application::Render() {
   SDL_SetRenderDrawColor(renderer, 35, 199, 201, 255);
   SDL_RenderClear(renderer);
   tomTom.Render(renderer);
-
+  DrawWalls();
   SDL_RenderPresent(renderer);
 }
 
@@ -131,16 +159,8 @@ void Application::Run() {
   while (running) {
     UpdateTiming();
     HandleEvents();
-    if (lastFrameShiftDown != isShiftDown) {
-      tomTom.Run(isShiftDown);
-    }
-    if (isLeftdown) {
-      tomTom.MoveLeft();
-    }
-    if (isRigthdown) {
-      tomTom.MoveRight();
-    }
-    tomTom.Update(deltaTime);
+ 
+    UpdateEntities();
     Render();
   }
 }
@@ -153,4 +173,27 @@ bool Application::Shutdown() {
   SDL_DestroyWindow(window);
 
   return true;
+}
+
+void Application::DrawWalls() {
+ for (Wall &wall : walls) {
+    wall.Render(renderer);
+  };
+}
+
+void Application::UpdateEntities()
+{
+     if (lastFrameShiftDown != isShiftDown) {
+      tomTom.Run(isShiftDown);
+    }
+    if (isLeftdown) {
+      tomTom.MoveLeft();
+    }
+    if (isRigthdown) {
+      tomTom.MoveRight();
+    }
+for (Wall &wall : walls) {
+    wall.Update(deltaTime);
+  }; 
+  tomTom.Update(deltaTime); 
 }
