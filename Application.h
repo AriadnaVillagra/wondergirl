@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 #include "Wall.h"
+#include "CollisionSystem.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -18,6 +19,7 @@ private:
   SDL_Renderer *renderer;
   SDL_Texture *tomTomTexture;
   SDL_Texture *wallTexture;
+  CollisionSystem collisionSystem;
   Character tomTom;
   std::vector<Wall> walls;
   bool running;

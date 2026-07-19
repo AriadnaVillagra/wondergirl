@@ -2,23 +2,41 @@
 
 #include <iostream>
 #include <ostream>
+#include "CollisionSystem.h"
+#include "Defines.h"
 
 constexpr float maxRunSpeed = 500;
 constexpr float jumpForce = 300;
-constexpr float gravity = 500;
+
 constexpr float acceleration = 500;
 constexpr float maxWalkSpeed = 100;
 
-void Character::Init(SpriteData &spriteData) {
-  x = 500 - 100 / 2;
-  y = 800 - 100;
-  sprite.target.x = x;
-  sprite.target.y = y;
+void Character::Init(SpriteData &spriteData, float startPosX, float startPosY, CollisionSystem &collisionSystem)
+{
+  colBox.entityType = EntityType::Character;
 
+  x = startPosX;
+  y = startPosY;
+
+  colBox.x = x;
+  colBox.y = y;
+  colBox.w = 100;
+  colBox.h = 100;
+
+  this->collisionSystem = &collisionSystem;
+  collisionSystem.AddToGroup1(&colBox);
   sprite.Init(spriteData);
-  sprite.SetAnimation({0, 1}, 0.3f, true);  
+  sprite.SetAnimation({0, 1}, 0.3f, true);
   sprite.SetAnimation({2, 3, 4, 5}, 0.3f, true);
   sprite.SetCurrentAnimation(0);
+}
+
+Character::~Character()
+{
+  if (collisionSystem)
+  {
+    collisionSystem->RemoveFromGroup1(&colBox);
+  }
 }
 
 
@@ -45,13 +63,13 @@ void Character::UpdateSpeed(float DeltaTime) {
 void Character::UpdatePosition(float DeltaTime) {
   x += horizontalSpeed * DeltaTime;
 
-  y -= jump * DeltaTime;
+  y -= verticalSpeed * DeltaTime;
 
   if (InAir()) {
-    jump -= gravity * DeltaTime;
+    verticalSpeed -= gravity * DeltaTime;
   } else {
     y = 800 - 100;
-    jump = 0;
+    verticalSpeed = 0;
     direction = 0;
   }
 }
@@ -64,7 +82,10 @@ void Character::Update(float DeltaTime) {
   UpdateSpeed(DeltaTime);
   UpdatePosition(DeltaTime);
   UpdateSprite(DeltaTime);
+  UpdateColBox();
+  HandleCollision();
 }
+
 void Character::MoveLeft() {
   if (!InAir()) {
     direction -= 1;
@@ -76,8 +97,8 @@ void Character::MoveRight() {
   }
 }
 void Character::Jump() {
-  if (jump == 0)
-    jump += jumpForce;
+  if (verticalSpeed == 0)
+    verticalSpeed += jumpForce;
 }
 bool Character::InAir() { return y < 800 - 100; }
 
@@ -95,7 +116,36 @@ void Character::ClampSpeed() {
     horizontalSpeed = -topSpeed;
   }
 }
+
 void Character::Run(bool running) {
   isRunning = running;
   sprite.SetCurrentAnimation(running ? 1 : 0);
+}
+
+void Character::UpdateColBox() {
+  colBox.x = x;
+  colBox.y = y;
+}
+
+void Character::HandleCollision() {
+for (ColBox* other : colBox.collisionList) {
+    if (other->entityType == EntityType::Wall) {
+        // Handle collision with wall
+        // For example, stop movement or adjust position
+        if (verticalSpeed < 0) {
+            y = other->y + other->h; // Adjust position to be on top of the wall
+            verticalSpeed = 0; // Stop upward movement
+        } else { 
+            y = other->y - colBox.h; // Adjust position to be below the wall
+        }
+
+        if (horizontalSpeed > 0) {
+            x = other->x - colBox.w; // Adjust position to the left of the wall
+        } else if (horizontalSpeed < 0) {
+            x = other->x + other->w; // Adjust position to the right of the wall
+        }
+        horizontalSpeed = 0; // Stop horizontal movement
+    }
+  }
+  colBox.collisionList.clear(); // Clear the collision list after handling
 }

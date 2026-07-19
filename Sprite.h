@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include <SDL3/SDL_rect.h>
-#include <SDL3/SDL_render.h>
 #include <vector>
 #include "Animation.h"
 #include "SpriteData.h"
+
+struct SDL_Renderer; // Forward declaration of SDL_Renderer
+struct SDL_Texture;  // Forward declaration of SDL_Texture
 
 class Sprite {
 public:

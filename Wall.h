@@ -1,18 +1,26 @@
 #pragma once
 
 #include "Sprite.h"
+#include "ColBox.h"
 
-class Wall{     
+class CollisionSystem; // Forward declaration of CollisionSystem
+struct SDL_Renderer;
+
+class Wall{
 public:
 
-void Init(SpriteData &spriteData, float startPosX, float startPosY);
+~Wall();
+void Init(SpriteData &spriteData, float startPosX, float startPosY, CollisionSystem &collisionSystem);
 void Render(SDL_Renderer *Renderer);
 void Update(float DeltaTime);
 
 private:
+    ColBox colBox;
     Sprite sprite;
+    CollisionSystem *collisionSystem = nullptr;
     float x;
     float y;
     void UpdateSprite(float DeltaTime);
+    void UpdateColBox();
 };
  

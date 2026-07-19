@@ -44,7 +44,7 @@ bool Application::Init() {
   tomTomSpriteData.framesPerRow = 6;
   tomTomSpriteData.rowCount = 4;
 
-  tomTom.Init(tomTomSpriteData);
+  tomTom.Init(tomTomSpriteData, 0, 0, collisionSystem);
 
   if (!TTF_Init()) {
     std::cout << "TTF_Init failed: " << SDL_GetError() << std::endl;
@@ -65,10 +65,9 @@ bool Application::Init() {
   wallSpriteData.framesPerRow = 9;
   wallSpriteData.rowCount = 11;
 
-for (int i = 0; i < 5; ++i) {
-    Wall wall;
-    wall.Init(wallSpriteData, 100.0f * i, 400.0f);
-    walls.push_back(wall);
+  walls.resize(5);
+  for (int i = 0; i < walls.size(); ++i) {
+    walls[i].Init(wallSpriteData, 100.0f * i, 600.0f, collisionSystem);
   }
 
 
@@ -159,8 +158,9 @@ void Application::Run() {
   while (running) {
     UpdateTiming();
     HandleEvents();
- 
     UpdateEntities();
+    collisionSystem.CheckAllCollisions();
+
     Render();
   }
 }

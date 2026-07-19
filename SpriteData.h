@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL3/SDL_render.h>
+struct SDL_Texture; // Forward declaration of SDL_Texture
 
 struct SpriteData {
 SDL_Texture *texture;

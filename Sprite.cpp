@@ -1,4 +1,5 @@
 ﻿#include "Sprite.h"
+#include <SDL3/SDL_render.h>
 
 void Sprite::Render(SDL_Renderer *renderer) {
   target.h = 100;
